@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfroDeli - Authentic African Cuisine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .africa-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1516026672322-beb52e191354?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cart-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: #d97706;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .active-nav::after {
+            width: 100%;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .spice-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-amber-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-xl font-bold text-amber-800">AfroDeli</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-amber-800 nav-link">Home</a>
+                    <a href="#menu" class="text-gray-700 hover:text-amber-800 nav-link">Menu</a>
+                    <a href="#about" class="text-gray-700 hover:text-amber-800 nav-link">About</a>
+                    <a href="#gallery" class="text-gray-700 hover:text-amber-800 nav-link">Gallery</a>
+                    <a href="#contact" class="text-gray-700 hover:text-amber-800 nav-link">Contact</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="cart-btn" class="text-gray-700 hover:text-amber-800 relative">
+                            <i class="fas fa-shopping-cart text-xl"></i>
+                            <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                        </button>
+                        <div id="cart-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-1 z-50">
+                            <div id="cart-items" class="max-h-96 overflow-y-auto px-4 py-2">
+                                <p class="text-gray-500 text-center py-4">Your cart is empty</p>
+                            </div>
+                            <div class="border-t border-gray-200 px-4 py-2">
+                                <div class="flex justify-between font-medium mb-2">
+                                    <span>Subtotal:</span>
+                                    <span id="cart-subtotal">$0.00</span>
+                                </div>
+                                <a href="#checkout" class="block w-full text-center px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700">Checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button id="user-btn" class="text-gray-700 hover:text-amber-800">
+                            <i class="fas fa-user text-xl"></i>
+                        </button>
+                        <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <a href="#login" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Login</a>
+                            <a href="#register" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Register</a>
+                        </div>
+                    </div>
+                    <div class="md:hidden flex items-center">
+                        <button id="mobile-menu-btn" class="text-gray-700 hover:text-amber-800">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50">Home</a>
+                <a href="#menu" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50">Menu</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50">About</a>
+                <a href="#gallery" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50">Gallery</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50">Contact</a>
+                <div class="border-t border-gray-200 pt-2">
+                    <a href="#login" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50">Login</a>
+                    <a href="#register" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-amber-800 hover:bg-gray-50">Register</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg text-white py-32 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">Experience the Taste of Africa</h1>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Authentic African cuisine made with traditional recipes and the freshest ingredients
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#menu" class="px-8 py-3 bg-amber-600 text-white rounded-md font-medium hover:bg-amber-700 transition duration-300">
+                    Order Now
+                </a>
+                <a href="#about" class="px-8 py-3 border-2 border-white text-white rounded-md font-medium hover:bg-white hover:text-amber-800 transition duration-300">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offers -->
+    <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-amber-800 mb-2">Today's Specials</h2>
+            <div class="w-20 h-1 bg-amber-600 mx-auto"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Special 1 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-lg relative">
+                <div class="spice-badge">Spicy</div>
+                <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Jollof Rice" 
+                     class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Jollof Rice</h3>
+                    <p class="text-gray-600 mb-4">West Africa's most famous rice dish cooked in a rich tomato sauce</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$12.99</span>
+                        <span class="text-sm text-gray-500 line-through">$15.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="1" 
+                                data-name="Jollof Rice" 
+                                data-price="12.99" 
+                                data-image="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Special 2 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-lg">
+                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Suya" 
+                     class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Suya (Spicy Grilled Meat)</h3>
+                    <p class="text-gray-600 mb-4">Skewered spicy grilled meat, a popular Nigerian street food</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$14.99</span>
+                        <span class="text-sm text-gray-500 line-through">$17.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="2" 
+                                data-name="Suya (Spicy Grilled Meat)" 
+                                data-price="14.99" 
+                                data-image="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Special 3 -->
+            <div class="bg-white rounded-lg overflow-hidden shadow-lg">
+                <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Injera" 
+                     class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Injera with Wat</h3>
+                    <p class="text-gray-600 mb-4">Ethiopian sourdough flatbread with spicy stew</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$11.99</span>
+                        <span class="text-sm text-gray-500 line-through">$13.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="3" 
+                                data-name="Injera with Wat" 
+                                data-price="11.99" 
+                                data-image="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-amber-800 mb-2">Our Menu</h2>
+            <div class="w-20 h-1 bg-amber-600 mx-auto"></div>
+            <p class="text-gray-600 max-w-2xl mx-auto mt-4">
+                Explore our diverse selection of authentic African dishes from across the continent
+            </p>
+        </div>
+        
+        <div class="flex flex-wrap justify-center mb-8">
+            <button class="menu-tab-btn px-4 py-2 mx-2 rounded-md bg-amber-600 text-white" data-tab="all">All</button>
+            <button class="menu-tab-btn px-4 py-2 mx-2 rounded-md bg-gray-200 hover:bg-amber-600 hover:text-white" data-tab="west">West African</button>
+            <button class="menu-tab-btn px-4 py-2 mx-2 rounded-md bg-gray-200 hover:bg-amber-600 hover:text-white" data-tab="east">East African</button>
+            <button class="menu-tab-btn px-4 py-2 mx-2 rounded-md bg-gray-200 hover:bg-amber-600 hover:text-white" data-tab="north">North African</button>
+            <button class="menu-tab-btn px-4 py-2 mx-2 rounded-md bg-gray-200 hover:bg-amber-600 hover:text-white" data-tab="south">South African</button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dish 1 -->
+            <div class="dish-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300" data-category="west">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Jollof Rice" 
+                         class="w-full h-48 object-cover">
+                    <div class="spice-badge">Spicy</div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-medium text-lg mb-1">Jollof Rice</h3>
+                    <p class="text-gray-500 text-sm mb-2">West Africa's most famous rice dish cooked in a rich tomato sauce</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$12.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="1" 
+                                data-name="Jollof Rice" 
+                                data-price="12.99" 
+                                data-image="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dish 2 -->
+            <div class="dish-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300" data-category="west">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Suya" 
+                         class="w-full h-48 object-cover">
+                    <div class="spice-badge">Spicy</div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-medium text-lg mb-1">Suya (Spicy Grilled Meat)</h3>
+                    <p class="text-gray-500 text-sm mb-2">Skewered spicy grilled meat, a popular Nigerian street food</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$14.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="2" 
+                                data-name="Suya (Spicy Grilled Meat)" 
+                                data-price="14.99" 
+                                data-image="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dish 3 -->
+            <div class="dish-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300" data-category="east">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Injera" 
+                         class="w-full h-48 object-cover">
+                    <div class="spice-badge">Spicy</div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-medium text-lg mb-1">Injera with Wat</h3>
+                    <p class="text-gray-500 text-sm mb-2">Ethiopian sourdough flatbread with spicy stew</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$11.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="3" 
+                                data-name="Injera with Wat" 
+                                data-price="11.99" 
+                                data-image="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dish 4 -->
+            <div class="dish-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300" data-category="west">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1633617477271-d4a818f6f7e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Egusi Soup" 
+                         class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-medium text-lg mb-1">Egusi Soup with Pounded Yam</h3>
+                    <p class="text-gray-500 text-sm mb-2">Melon seed soup with leafy vegetables and pounded yam</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$13.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="4" 
+                                data-name="Egusi Soup with Pounded Yam" 
+                                data-price="13.99" 
+                                data-image="https://images.unsplash.com/photo-1633617477271-d4a818f6f7e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dish 5 -->
+            <div class="dish-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300" data-category="north">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1589301760014-d929397d9e8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Couscous" 
+                         class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-medium text-lg mb-1">Moroccan Couscous</h3>
+                    <p class="text-gray-500 text-sm mb-2">Steamed semolina with vegetables and aromatic spices</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$10.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="5" 
+                                data-name="Moroccan Couscous" 
+                                data-price="10.99" 
+                                data-image="https://images.unsplash.com/photo-1589301760014-d929397d9e8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dish 6 -->
+            <div class="dish-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300" data-category="south">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" 
+                         alt="Bobotie" 
+                         class="w-full h-48 object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-medium text-lg mb-1">Bobotie</h3>
+                    <p class="text-gray-500 text-sm mb-2">South African spiced minced meat baked with an egg topping</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-amber-800">$12.99</span>
+                        <button class="add-to-cart px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm" 
+                                data-id="6" 
+                                data-name="Bobotie" 
+                                data-price="12.99" 
+                                data-image="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="africa-bg text-white py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-2">About AfroDeli</h2>
+                <div class="w-20 h-1 bg-amber-600 mx-auto"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                    <h3 class="text-2xl font-bold mb-4">Our Story</h3>
+                    <p class="mb-4">
+                        Founded in 2010 by Chef , AfroDeli was born out of a passion to share the rich culinary traditions of Africa with the world. 
+                        Chef Amina grew up in Senegal, where she learned traditional cooking techniques from her grandmother.
+                    </p>
+                    <p class="mb-6">
+                        Today, AfroDeli brings together flavors from across the African continent - from the spicy stews of West Africa to the aromatic tagines of North Africa. 
+                        We use authentic recipes passed down through generations and source our ingredients with care.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <div class="bg-amber-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-utensils text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Authentic Recipes</h4>
+                                <p class="text-gray-300 text-sm">Traditional methods</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-amber-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-leaf text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Fresh Ingredients</h4>
+                                <p class="text-gray-300 text-sm">Locally sourced</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-amber-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-heart text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Made with Love</h4>
+                                <p class="text-gray-300 text-sm">Passionate chefs</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-amber-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-award text-amber-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Award Winning</h4>
+                                <p class="text-gray-300 text-sm">Recognized excellence</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="https://images.unsplash.com/photo-1603105037880-880cd4edfb1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                         alt="Chef Amina" 
+                         class="rounded-lg shadow-xl w-full max-w-md">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-amber-800 mb-2">Food Gallery</h2>
+            <div class="w-20 h-1 bg-amber-600 mx-auto"></div>
+            <p class="text-gray-600 max-w-2xl mx-auto mt-4">
+                A visual journey through our delicious African dishes
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="overflow-hidden rounded-lg shadow-md">
+                <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Jollof Rice" 
+                     class="w-full h-64 object-cover hover:scale-105 transition duration-300">
+            </div>
+            <div class="overflow-hidden rounded-lg shadow-md">
+                <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Suya" 
+                     class="w-full h-64 object-cover hover:scale-105 transition duration-300">
+            </div>
+            <div class="overflow-hidden rounded-lg shadow-md">
+                <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Injera" 
+                     class="w-full h-64 object-cover hover:scale-105 transition duration-300">
+            </div>
+            <div class="overflow-hidden rounded-lg shadow-md">
+                <img src="https://images.unsplash.com/photo-1633617477271-d4a818f6f7e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Egusi Soup" 
+                     class="w-full h-64 object-cover hover:scale-105 transition duration-300">
+            </div>
+            <div class="overflow-hidden rounded-lg shadow-md">
+                <img src="https://images.unsplash.com/photo-1589301760014-d929397d9e8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Couscous" 
+                     class="w-full h-64 object-cover hover:scale-105 transition duration-300">
+            </div>
+            <div class="overflow-hidden rounded-lg shadow-md">
+                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" 
+                     alt="Bobotie" 
+                     class="w-full h-64 object-cover hover:scale-105 transition duration-300">
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-amber-50">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-amber-800 mb-2">What Our Customers Say</h2>
+            <div class="w-20 h-1 bg-amber-600 mx-auto"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Testimonial 1 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    "The Jollof Rice at AfroDeli is the best I've had outside of Nigeria! The flavors are authentic and the service is excellent."
+                </p>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Adeola Johnson" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <h4 class="font-medium">Adeola Johnson</h4>
+                        <p class="text-gray-500 text-sm">Lagos, Nigeria</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 2 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    "As someone from Ethiopia, I can say the Injera here is very authentic. The spices are perfect and it reminds me of home."
+                </p>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Dennis Musyoka" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <h4 class="font-medium">Dennis Musyoka</h4>
+                        <p class="text-gray-500 text-sm">Addis Ababa, Ethiopia</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial 3 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">
+                    "I'm not African but I love exploring world cuisines. AfroDeli has introduced me to amazing flavors I never knew existed!"
+                </p>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Sarah Miller" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <h4 class="font-medium">Sarah Miller</h4>
+                        <p class="text-gray-500 text-sm">Nairobi kenya</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-amber-800 mb-2">Contact Us</h2>
+            <div class="w-20 h-1 bg-amber-600 mx-auto"></div>
+            <p class="text-gray-600 max-w-2xl mx-auto mt-4">
+                Have questions or want to make a reservation? Reach out to us!
+            </p>
+        </div>
+        
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="md:w-1/2">
+                <form class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                        <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"></textarea>
+                    </div>
+                    <button type="submit" class="w-full px-6 py-3 bg-amber-600 text-white rounded-md hover:bg-amber-700 hover:shadow-lg transition duration-300">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+            
+            <div class="md:w-1/2">
+                <div class="bg-amber-50 p-6 rounded-lg shadow-md h-full">
+                    <h3 class="text-xl font-semibold mb-4">Our Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-medium">Address</h4>
+                                <p class="text-gray-600">322 South b, Nairobi, Kenya</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-medium">Email</h4>
+                                <p class="text-gray-600">dennixmusyoka1@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-medium">Phone</h4>
+                                <p class="text-gray-600">+254-716-975-570</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="font-medium">Hours</h4>
+                                <p class="text-gray-600">Monday - Friday: 11am - 10pm</p>
+                                <p class="text-gray-600">Saturday - Sunday: 10am - 11pm</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="font-medium mb-2">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 hover:bg-amber-200">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 hover:bg-amber-200">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 hover:bg-amber-200">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 hover:bg-amber-200">
+                                <i class="fab fa-yelp"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map -->
+    <div class="w-full h-96">
+        <iframe 
+
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.098080710997!2d36.822280623243486!3d-1.310627328742354!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f11a9d644a551%3A0xffc84960ca560e99!2sSouth%20B%2C%20Nairobi!5e0!3m2!1sen!2ske!4v1747504423186!5m2!1sen!2ske"            
+            width="100%" 
+            height="100%" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+
+    <!-- Newsletter -->
+    <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-amber-600 text-white">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold mb-2">Subscribe to Our Newsletter</h2>
+            <p class="mb-6 max-w-2xl mx-auto">
+                Stay updated with our latest dishes, special offers, and cultural events.
+            </p>
+            <form class="max-w-md mx-auto flex">
+                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-l-md focus:outline-none text-gray-900">
+                <button type="submit" class="px-6 py-3 bg-amber-800 text-white rounded-r-md hover:bg-amber-900 transition duration-300">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-amber-400 mb-4">AfroDeli</h3>
+                    <p class="text-gray-400">
+                        Bringing the authentic taste of Africa to your table since 2010. 
+                        Quality ingredients, traditional recipes, and unforgettable flavors.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-amber-400 transition duration-300">Home</a></li>
+                        <li><a href="#menu" class="text-gray-400 hover:text-amber-400 transition duration-300">Menu</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-amber-400 transition duration-300">About</a></li>
+                        <li><a href="#gallery" class="text-gray-400 hover:text-amber-400 transition duration-300">Gallery</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-amber-400 transition duration-300">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Information</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-amber-400 transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-amber-400 transition duration-300">Terms & Conditions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-amber-400 transition duration-300">Shipping Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-amber-400 transition duration-300">Returns & Refunds</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-amber-400 transition duration-300">FAQs</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Payment Methods</h4>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <i class="fab fa-cc-visa text-2xl text-gray-400"></i>
+                        <i class="fab fa-cc-mastercard text-2xl text-gray-400"></i>
+                        <i class="fab fa-cc-amex text-2xl text-gray-400"></i>
+                        <i class="fab fa-cc-paypal text-2xl text-gray-400"></i>
+                        <i class="fab fa-cc-apple-pay text-2xl text-gray-400"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white hover:bg-amber-600">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white hover:bg-amber-600">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white hover:bg-amber-600">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="h-10 w-10 rounded-full bg-gray-700 flex items-center justify-center text-white hover:bg-amber-600">
+                            <i class="fab fa-yelp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 AfroDeli. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-bold">Login</h3>
+                    <button id="close-login-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form class="space-y-4">
+                    <div>
+                        <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="login-email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="login-password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember-me" type="checkbox" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
+                            <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                        </div>
+                        <a href="#" class="text-sm text-amber-600 hover:text-amber-800">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="w-full px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 hover:shadow-lg transition duration-300">
+                        Login
+                    </button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-sm text-gray-600">Don't have an account? <a href="#register" class="text-amber-600 hover:text-amber-800">Register</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-2xl font-bold">Register</h3>
+                    <button id="close-register-modal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form class="space-y-4">
+                    <div>
+                        <label for="register-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="register-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label for="register-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" id="register-email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label for="register-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="register-password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label for="register-confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                    </div>
+                    <div class="flex items-center">
+                        <input id="terms" type="checkbox" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
+                        <label for="terms" class="ml-2 block text-sm text-gray-700">
+                            I agree to the <a href="#" class="text-amber-600 hover:text-amber-800">Terms & Conditions</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="w-full px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 hover:shadow-lg transition duration-300">
+                        Register
+                    </button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-sm text-gray-600">Already have an account? <a href="#login" class="text-amber-600 hover:text-amber-800">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Page -->
+    <div id="checkout-page" class="fixed inset-0 bg-white z-50 overflow-y-auto hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Checkout</h2>
+                <button id="close-checkout" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="lg:w-2/3">
+                    <div class="bg-amber-50 rounded-lg shadow-md p-6 mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Delivery Information</h3>
+                        <form class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <input type="text" id="first-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                                <div>
+                                    <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <input type="text" id="last-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                <input type="text" id="address" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label for="address2" class="block text-sm font-medium text-gray-700 mb-1">Address 2 (Optional)</label>
+                                <input type="text" id="address2" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                    <input type="text" id="city" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                                <div>
+                                    <label for="state" class="block text-sm font-medium text-gray-700 mb-1">State</label>
+                                    <select id="state" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                        <option>Kenya</option>
+                                        <option>Tanzania</option>
+                                        <option>Uganda</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="zip" class="block text-sm font-medium text-gray-700 mb-1">ZIP Code</label>
+                                    <input type="text" id="zip" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label for="instructions" class="block text-sm font-medium text-gray-700 mb-1">Delivery Instructions (Optional)</label>
+                                <textarea id="instructions" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500"></textarea>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="save-info" type="checkbox" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
+                                <label for="save-info" class="ml-2 block text-sm text-gray-700">Save this information for next time</label>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="bg-amber-50 rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-semibold mb-4">Payment Method</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center border border-gray-300 rounded-md p-4">
+                                <input id="credit-card" name="payment-method" type="radio" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300" checked>
+                                <label for="credit-card" class="ml-3 block text-sm font-medium text-gray-700">
+                                    <div class="flex items-center">
+                                        <span>Credit Card</span>
+                                        <div class="ml-4 flex space-x-2">
+                                            <i class="fab fa-cc-visa text-2xl text-gray-500"></i>
+                                            <i class="fab fa-cc-mastercard text-2xl text-gray-500"></i>
+                                            <i class="fab fa-cc-amex text-2xl text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center border border-gray-300 rounded-md p-4">
+                                <input id="paypal" name="payment-method" type="radio" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300">
+                                <label for="paypal" class="ml-3 block text-sm font-medium text-gray-700">
+                                    <div class="flex items-center">
+                                        <span>PayPal</span>
+                                        <i class="fab fa-cc-paypal text-2xl text-gray-500 ml-4"></i>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center border border-gray-300 rounded-md p-4">
+                                <input id="cash" name="payment-method" type="radio" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300">
+                                <label for="cash" class="ml-3 block text-sm font-medium text-gray-700">
+                                    <div class="flex items-center">
+                                        <span>Cash on Delivery</span>
+                                        <i class="fas fa-money-bill-wave text-2xl text-gray-500 ml-4"></i>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="credit-card-form" class="mt-6 space-y-4">
+                            <div>
+                                <label for="card-number" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label for="card-name" class="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
+                                <input type="text" id="card-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="card-expiry" class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
+                                    <input type="text" id="card-expiry" placeholder="MM/YY" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                                <div>
+                                    <label for="card-cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                                    <input type="text" id="card-cvv" placeholder="123" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/3">
+                    <div class="bg-white rounded-lg shadow-md p-6 sticky top-4">
+                        <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+                        <div id="checkout-items" class="space-y-4 mb-6 max-h-64 overflow-y-auto">
+                            <!-- Cart items will be populated here -->
+                        </div>
+                        <div class="border-t border-gray-200 pt-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Subtotal</span>
+                             <span id="checkout-subtotal" class="font-bold">$0.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Delivery</span>
+                                <span id="checkout-delivery">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>Total</span>
+                                <span id="checkout-total">$0.00</span>
+                            </div>
+                        </div>
+                        <button id="place-order" class="w-full mt-6 px-4 py-3 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition duration-300">
+                            Place Order
+                        </button>
+                        <div id="order-success" class="hidden mt-4 text-green-600 font-semibold text-center">
+                            Thank you! Your order has been placed.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Checkout Page -->
+
+    <!-- Scripts -->
+    <script>
+    // Cart logic
+    let cart = [];
+
+    // Utility functions
+    function updateCartCount() {
+        document.getElementById('cart-count').textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+    }
+
+    function updateCartDropdown() {
+        const cartItemsDiv = document.getElementById('cart-items');
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        document.getElementById('cart-subtotal').textContent = '$' + subtotal.toFixed(2);
+
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p class="text-gray-500 text-center py-4">Your cart is empty</p>';
+            return;
+        }
+        cartItemsDiv.innerHTML = '';
+        cart.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'flex items-center cart-item py-2 border-b border-gray-100';
+            div.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded mr-3 object-cover">
+                <div class="flex-1">
+                    <div class="font-medium">${item.name}</div>
+                    <div class="text-xs text-gray-500">$${item.price.toFixed(2)} x ${item.qty}</div>
+                </div>
+                <button class="text-red-500 ml-2 remove-cart-item" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+            `;
+            cartItemsDiv.appendChild(div);
+        });
+        // Remove item event
+        cartItemsDiv.querySelectorAll('.remove-cart-item').forEach(btn => {
+            btn.onclick = function() {
+                const id = this.getAttribute('data-id');
+                cart = cart.filter(item => item.id !== id);
+                updateCartCount();
+                updateCartDropdown();
+            }
+        });
+    }
+
+    function updateCheckoutSummary() {
+        const checkoutItemsDiv = document.getElementById('checkout-items');
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const delivery = subtotal > 0 ? 3.99 : 0;
+        const total = subtotal + delivery;
+        document.getElementById('checkout-subtotal').textContent = '$' + subtotal.toFixed(2);
+        document.getElementById('checkout-delivery').textContent = '$' + delivery.toFixed(2);
+        document.getElementById('checkout-total').textContent = '$' + total.toFixed(2);
+
+        if (cart.length === 0) {
+            checkoutItemsDiv.innerHTML = '<p class="text-gray-500 text-center py-4">Your cart is empty</p>';
+            return;
+        }
+        checkoutItemsDiv.innerHTML = '';
+        cart.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'flex items-center py-2 border-b border-gray-100';
+            div.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded mr-3 object-cover">
+                <div class="flex-1">
+                    <div class="font-medium">${item.name}</div>
+                    <div class="text-xs text-gray-500">$${item.price.toFixed(2)} x ${item.qty}</div>
+                </div>
+            `;
+            checkoutItemsDiv.appendChild(div);
+        });
+    }
+
+    // Add to cart buttons
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.onclick = function() {
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const price = parseFloat(this.getAttribute('data-price'));
+            const image = this.getAttribute('data-image');
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ id, name, price, image, qty: 1 });
+            }
+            updateCartCount();
+            updateCartDropdown();
+        }
+    });
+
+    // Cart dropdown toggle
+    document.getElementById('cart-btn').onclick = function(e) {
+        e.stopPropagation();
+        document.getElementById('cart-dropdown').classList.toggle('hidden');
+        updateCartDropdown();
+    };
+    document.body.addEventListener('click', function() {
+        document.getElementById('cart-dropdown').classList.add('hidden');
+    });
+    document.getElementById('cart-dropdown').onclick = function(e) {
+        e.stopPropagation();
+    };
+
+    // Checkout modal logic
+    document.querySelectorAll('a[href="#checkout"]').forEach(btn => {
+        btn.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById('checkout-page').classList.remove('hidden');
+            updateCheckoutSummary();
+        }
+    });
+    document.getElementById('close-checkout').onclick = function() {
+        document.getElementById('checkout-page').classList.add('hidden');
+    };
+
+    // Place order
+    document.getElementById('place-order').onclick = function() {
+        if (cart.length === 0) return;
+        document.getElementById('order-success').classList.remove('hidden');
+        cart = [];
+        updateCartCount();
+        updateCartDropdown();
+        updateCheckoutSummary();
+        setTimeout(() => {
+            document.getElementById('checkout-page').classList.add('hidden');
+            document.getElementById('order-success').classList.add('hidden');
+        }, 2000);
+    };
+
+    // Mobile menu
+    document.getElementById('mobile-menu-btn').onclick = function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    };
+
+    // User dropdown
+    document.getElementById('user-btn').onclick = function(e) {
+        e.stopPropagation();
+        document.getElementById('user-dropdown').classList.toggle('hidden');
+    };
+    document.body.addEventListener('click', function() {
+        document.getElementById('user-dropdown').classList.add('hidden');
+    });
+    document.getElementById('user-dropdown').onclick = function(e) {
+        e.stopPropagation();
+    };
+
+    // Login/Register modal logic
+    document.querySelectorAll('a[href="#login"]').forEach(btn => {
+        btn.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById('login-modal').classList.remove('hidden');
+        }
+    });
+    document.querySelectorAll('a[href="#register"]').forEach(btn => {
+        btn.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById('register-modal').classList.remove('hidden');
+        }
+    });
+    document.getElementById('close-login-modal').onclick = function() {
+        document.getElementById('login-modal').classList.add('hidden');
+    };
+    document.getElementById('close-register-modal').onclick = function() {
+        document.getElementById('register-modal').classList.add('hidden');
+    };
+    document.getElementById('login-modal').onclick = function(e) {
+        if (e.target === this) this.classList.add('hidden');
+    };
+    document.getElementById('register-modal').onclick = function(e) {
+        if (e.target === this) this.classList.add('hidden');
+    };
+
+    // Menu tab filter
+    document.querySelectorAll('.menu-tab-btn').forEach(btn => {
+        btn.onclick = function() {
+            document.querySelectorAll('.menu-tab-btn').forEach(b => b.classList.remove('bg-amber-600', 'text-white'));
+            this.classList.add('bg-amber-600', 'text-white');
+            const tab = this.getAttribute('data-tab');
+            document.querySelectorAll('.dish-card').forEach(card => {
+                if (tab === 'all' || card.getAttribute('data-category') === tab) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    // Prevent form submits (demo only)
+    document.querySelectorAll('form').forEach(form => {
+        form.onsubmit = function(e) {
+            e.preventDefault();
+        }
+    });
+    </script>
+</body>
+</html>
+</html>
